@@ -1,0 +1,480 @@
+\documentclass[twocolumn]{ctexart}
+\usepackage{ctex}
+\usepackage{amsmath}
+
+%首行缩进两字符 利用\indent \noindent进行控制
+\usepackage{indentfirst}
+\setlength{\parindent}{2em}
+
+%算法包
+\usepackage{caption}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+%页边距包
+\usepackage{geometry}
+\geometry {left=2.0cm ,right=2.0cm,top=2.5cm,bottom=2.5cm}
+
+%枚举
+\usepackage{enumerate}
+
+%算法input output
+\renewcommand{\algorithmicrequire}{\textbf{Input:}} % Use Input in the format of Algorithm
+\renewcommand{\algorithmicensure}{\textbf{Output:}} % Use Output in the format of Algorithm
+
+%数学符号
+\usepackage{amssymb}
+
+%图片
+\usepackage{graphicx}
+
+\begin {document}
+	\title{Problem Set 2 Answer Sheet}
+	\author{\textbf{151220131谢旻晖}}
+	\date{}
+	\maketitle
+\section*{Problem 2.1}
+
+~\\
+1.\\
+\indent 冒泡排序中的循环不变量为：每次循环后，数组$A[i……n]$为原数组中$n-i+1$个最大的数且已排好。\\
+\indent
+下面利用循环不变量证明算法的正确性：\\
+\indent
+\textbf{初始化}：当$i=n$时,内层循环迭代了$n-1$次使得整个数组中最大的数交换至$A[n]$处。此时，循环不变量成立。\\
+\indent
+\textbf{保持}:设$i=k$时循环不变量成立，当$i=k-1$时，内层循环从$j=1$迭代到$j=k-2$,将$A[1……k-1]$中的最大数交换至$A[k-2]$,且由假设的循环不变量得$A[k……n]$已排好易得$A[k-1,k,……n]$也已排好，循环不变量仍然成立。\\
+\indent
+\textbf{结束}:当$i=2$时算法结束，此时$A[2……n]$已排好，且是$n$个元素中较大的那$n-1$个，所以$A[1……n]$自然有序，算法正确性得证。\\
+~\\
+2.\\
+\indent 我们从逆序对的角度考虑，由于是相邻元素比较，一次比较最多消除\textbf{一个}逆序对。\\
+\indent
+\textbf{在最坏情况下:}最多可以产生$\frac{n(n-1)}{2}$个逆序对，所以最坏情况下算法的时间复杂度为$\Theta(n^{2})$。\\
+\indent
+\textbf{在平均情况下:}我们考虑任意的一种序列${x_{1},x_{2}……x_{i}……x_{j}……x_{n}}$与他的转置$x_{n},x_{n-1}……x_{j}……x_{i}……x_{1}$,逆序对$(x_{i},x_{j})$只有一个。而总的逆序对$(x_{i},x_{j})$的组合有$\binom{n}{2}=\frac{n(n-1)}{2}$种，所以逆序对出现的平均次数为$\frac{n(n-1)}{4}$,即在平均情况下算法的时间复杂度为$\Theta(n^{2})$。\\
+~\\
+3.\\
+\indent 并不会改变，从逆序对的角度来看，题述的方法并没有改变算法"一次比较至多减少一个逆序对"的本质。\\
+
+\section*{Problem 2.2}
+\indent 同高度下，满二叉树叶子结点最多，高度为h的满二叉树叶子结点数目为$2^{h}$，所以$L<=2^{h}$。\\
+
+\section*{Problem 2.5}
+1.见 \textbf{Algorithm 1}
+\begin{algorithm}[htbp]
+	\caption{PARTITION$(A,1,n)$}
+	\begin{algorithmic}[1]
+		\STATE $i=0$
+		\FOR{$j=0$ to $n$}
+			\IF{$A[j]<=0$}
+				\STATE $i=i+1$
+				\STATE $swap(A[i],A[j])$
+			\ENDIF
+		\ENDFOR
+		\RETURN $i$
+	\end{algorithmic}
+\end{algorithm}
+
+2.见 \textbf{Algorithm 2}
+\begin{algorithm}[htbp]
+	\caption{PARTITION$(A,1,n)$}
+	\begin{algorithmic}[1]
+		\STATE $i=0$
+		\STATE $j=n+1$
+		\FOR{$x=p$ to $r$}
+			\IF{the color of $A[x]$ is $yellow$}
+				\STATE $i=i+1$
+				\STATE $swap(A[x],A[i])$
+			\ELSIF{the color of $A[x]$ is $blue$}
+				\STATE $j=j-1$
+				\STATE $swap(A[x],A[j])$
+			\ENDIF
+		\ENDFOR
+		\RETURN
+		\STATE //1到i为黄球,i+1到j-1为红球，j到n为蓝球
+	\end{algorithmic}
+\end{algorithm}
+
+
+\section*{Problem 2.6}
+	\begin{enumerate}
+		\item $D-ARY-PARENT(i)=\left\lfloor\frac{i-2}{d}+1\right\rfloor$
+		\item $D-ARY-CHILD(i, j)= d(i-1) + j +1$
+	\end{enumerate}
+	\indent 定义$\left(a,b\right)$为深度为$a$的第$b$个节点（从0开始计数，且$1\leq b \leq d^{a-1}$）。
+	\\那么由等比求和公式，我们易得$\left(a,b\right)$在数组中的下标$i$为:
+	\begin{displaymath}
+		i=\frac{1-d^{a}}{1-d}+b
+	\end{displaymath}
+	\indent \textbf{首先证明1式成立}：显然地，$\left(a,b\right)$的父结点可用上述坐标表示为$\left(a-1,\left\lfloor\frac{b}{d}\right\rfloor+1\right)$。
+	那么由上面的公式，我们有
+	\begin{eqnarray*}
+		\left(a-1,\left\lfloor\frac{b}{d}\right\rfloor+1\right) &= \frac{1-d^{a-1}}{1-d} +\left\lfloor\frac{b}{d}\right\rfloor +1\\
+	\end{eqnarray*}
+	那么我们只要证明等式
+	\begin{equation*}
+		\frac{1-d^{a-1}}{1-d} +\left\lfloor\frac{b}{d}\right\rfloor +1 = \left\lfloor\frac{i-2}{d}+1\right\rfloor
+	\end{equation*}
+	要证明上式成立，只要证明
+	\begin{equation*}
+	\frac{1-d^{a-1}}{1-d} +\left\lfloor\frac{b}{d}\right\rfloor +1 = \left\lfloor\frac{i-2}{d}+1\right\rfloor
+	\end{equation*}	
+	只要证明
+		\begin{equation*}
+	\frac{1-d^{a-1}}{1-d} +\left\lfloor\frac{b}{d}\right\rfloor +1 = \left\lfloor\frac{\frac{1-d^{a}}{1-d}+b-2}{d}+1\right\rfloor
+	\end{equation*}		
+	等式两边同时-1,
+再乘以(1-d)，只要证明
+	\begin{equation*}
+	1-d^{a-1}+(1-d)\left\lfloor\frac{b}{d}\right\rfloor=\left\lfloor\frac{1-d^{a}}{d}-\frac{2(1-d)}{d}+\frac{b(1-d)}{d}\right\rfloor
+	\end{equation*}
+	只要证明
+	\begin{equation*}
+		1=\left\lfloor2-\frac{1}{d}\right\rfloor
+	\end{equation*}
+	由于 $d \ge 1$,所以上式子成立，命题得证。\\
+	~\\
+	\indent \textbf{再证明2式成立}:\\
+	设节点下标为$i$的结点用坐标表示为$(a,b)$，那么他的第$j$个子女结点可用坐标表示为$(a+1,(b-1)*d+j)$\\
+	\[
+		i=(a,b)=\frac{1-d^{a}}{1-d}+b		
+	\]
+	\[
+		(a+1,(b-1)*d+j)=\frac{1-d^{a+1}}{1-d}+(b-1)*d+j
+	\]
+	要证明
+	\[D-ARY-CHILD(i, j)= d(i-1) + j +1\]
+	只要证
+	\[
+		\frac{1-d^{a+1}}{1-d}+(b-1)*d+j=d(\frac{1-d^{a}}{1-d}+b-1)+j+1
+	\]
+	只要证
+	\[
+		1-a^{a+1}+d(1-d)(b-1)=d(1-d^{a})+d(1-d)(b-1)+(1-d)(j+1)
+	\]
+	上式展开，左右相等，证明完毕。\\
+	
+	\section*{Problem 2.7}
+	\indent 合并时,每次总是要么取A中的最小的，要么取B中的最小的。如果该次取了A中的，则记$'a'$，如果该次取了B中的，则记$'b'$。那问题就转化为有$k$个$'a'$,$m$个$'b'$的字母排列有多少种，很显然是$\binom{n}{k}=\binom{n}{m}$。\\
+	
+	\section*{Problem 2.10}
+	\indent 采用一种类似于快速排序的算法,从未匹配的螺母中拿一个$x$，将所有的螺钉逐个进行匹配，将螺钉比螺母$x$小的归为一组$A$，螺钉比螺母$x$大的归为一组$B$，并且还找到了一个匹配的螺钉，记为$X$。将$x$匹配的螺钉$X$旋入所有除了$x$的螺母，将比螺钉$X$大的螺母归为一组$a$,将比螺钉$X$小的螺母归为一组$b$。分别再对组$(A,a)$,组$(B,b)$再进行上述操作。\\
+	\begin{algorithm}[htbp]
+		\caption {QUICK\_MATCH (S,s)}
+		\begin{algorithmic}[1]
+			\REQUIRE
+			螺钉集合S，螺母集合s 
+			\ENSURE
+			形如$\{(X_1,x_1),(X_2,x_2) ……(X_n,x_n)\}$的匹配集合
+			\IF {$|S|==0$}
+					\RETURN $\varnothing$
+			\ENDIF
+			\STATE $RESULT= \varnothing$
+			\STATE $A=\varnothing,a=\varnothing$
+			\STATE $B=\varnothing,b=\varnothing$
+			\STATE 取$x\in s$
+			\FOR{each $I \in S$}
+				\IF {$I>x$}
+					\STATE $A=A\cup{I}$
+				\ELSIF{$I<x$} 
+					\STATE $B=B\cup{I}$
+				\ELSE
+					\STATE $X=I$
+					\STATE $RESULT=RESULT \cup {(X,x)}$
+				\ENDIF
+			\ENDFOR 
+			\FOR{each $i \in s$}
+				\IF {$i>X$}
+					\STATE $a=a\cup{i}$
+				\ELSIF{$i<X$} 
+					\STATE $b=b\cup{i}$
+				\ELSE
+					\STATE $do\ nothing$
+				\ENDIF
+			\ENDFOR 
+			\RETURN $RESULT \cup QUICK\_MATCH(A,a) \cup QUICK\_MATCH(B,b)$
+		\end{algorithmic}
+	\end{algorithm}
+	\indent 算法伪代码表示见 \textbf{Algorithm\ 3 QUCIK\_MATCH}\\
+	\indent 我们易得\[T(n)=2T(\frac{n}{2})+\Theta(n)\]
+	\[T(n)\in \Theta(n\log{n})\]
+
+\section*{Problem 2.11}
+1.算法见\textbf{Algorithm 4 $COUNT\_INVERSIONS$},调用时候令$p=1,r=n$\\
+	\begin{algorithm}[htbp]
+	\caption {COUNT\_INVERSIONS$(A[\ ],p,r)$}
+	\begin{algorithmic}[1]
+		\IF {$p<r$}
+			\STATE $q=\left\lfloor\frac{p+r}{2}\right\rfloor]$
+			\STATE $subcount_1=COUNT\_INVERSIONS(A,p,q)$
+			\STATE $subcount_2=COUNT\_INVERSIONS(A,q+1,r)$
+			\STATE //MERGE(A,p,q,r)
+			\STATE $n_1=q-p+1$
+			\STATE $n_2=r-q$
+			\STATE let\ $L[1..n_1+1]\ and\ R[1..n_2+1]$ be new arrays
+			\FOR {$ i=1\ to\ n_1$}
+				\STATE $L[i]=A[p+i-1]$
+			\ENDFOR
+			\FOR{$j=1\ to\ n_2$}
+				\STATE $R[j]=A[q+j]$
+			\ENDFOR
+			\STATE $L[n_1+1]=\infty$
+			\STATE $R[n_2+1]=\infty$
+			\STATE $i=1$
+			\STATE $j=1$
+			\STATE $count=0$
+			\FOR{$k=p\ to\ r$}
+				\IF {$L[i]\leq R[j]$}
+					\STATE $A[k]=L[i]$
+					\STATE $i=i+1$
+				\ELSE
+					\STATE $count=count+n_1-i+1$//which is attached to mergesort 
+					\STATE $A[k]=L[j]$
+					\STATE $j=j+1$
+				\ENDIF
+			\ENDFOR
+			\RETURN $count+subcount_1+subcount_2$
+		\ELSE
+			\RETURN $0$
+		\ENDIF	
+			
+	\end{algorithmic}
+\end{algorithm}
+2.算法见\textbf{Algorithm 5 $COUNT\_INVERSIONS\_MODIFIED$},调用时候令$p=1,r=n$,只要对上题算法稍作改动即可(改动主要于$line\ 25$)\\
+\begin{algorithm}[htbp]
+	\caption {COUNT\_INVERSIONS\_MODIFIED$(A[\ ],p,r,C)$}
+	\begin{algorithmic}[1]
+		\IF {$p<r$}
+		\STATE $q=\left\lfloor\frac{p+r}{2}\right\rfloor]$
+		\STATE $subcount_1=COUNT\_INVERSIONS\_MODIFIED(A,p,q,C)$
+		\STATE $subcount_2=COUNT\_INVERSIONS\_MODIFIED(A,q+1,r,C)$
+		\STATE //MERGE(A,p,q,r)
+		\STATE $n_1=q-p+1$
+		\STATE $n_2=r-q$
+		\STATE let\ $L[1..n_1+1]\ and\ R[1..n_2+1]$ be new arrays
+		\FOR {$ i=1\ to\ n_1$}
+		\STATE $L[i]=A[p+i-1]$
+		\ENDFOR
+		\FOR{$j=1\ to\ n_2$}
+		\STATE $R[j]=A[q+j]$
+		\ENDFOR
+		\STATE $L[n_1+1]=\infty$
+		\STATE $R[n_2+1]=\infty$
+		\STATE $i=1$
+		\STATE $j=1$
+		\STATE $count=0$
+		\FOR{$k=p\ to\ r$}
+		\IF {$L[i]\leq R[j]$}
+		\STATE $A[k]=L[i]$
+		\STATE $i=i+1$
+		\ELSE
+			\IF {$L[i] \geq C*R[j]$}
+				\STATE $count=count+n_1-i+1$//which is attached to mergesort 
+			\ENDIF
+		\STATE $A[k]=L[j]$
+		\STATE $j=j+1$
+		\ENDIF
+		\ENDFOR
+		\RETURN $count+subcount_1+subcount_2$
+		\ELSE
+		\RETURN $0$
+		\ENDIF	
+		
+	\end{algorithmic}
+\end{algorithm}
+\section*{Problem 2.12}
+\noindent 1.i)\\
+\indent 如果存在14个不同的常见元素，则总元素个数大于n，矛盾。\\
+1.ii)\\
+\indent x是$R[1...n]$的常见元素，所以至少有$\frac{n}{13}$个$x$在数组中，将数组$R[1...n]$划分为$R[1...\frac{n}{2}]$和$R[\frac{n}{2}+1...n]$两个子数组,则至少有一个子数组中的$x$的个数大于等于$\frac{n}{26}$,根据定义，$x$是这个子数组的常见元素。\\
+
+
+
+
+\begin{algorithm}[htbp]	
+	\caption{FOUND\_COMMON\_ELEMENTS(R[\ ],p,r)}
+	\label{FOUNDCOMMONELEMENTS}
+	\begin{algorithmic}[1]
+		\REQUIRE R为数组，初次调用时$p=1,r=n$
+		\ENSURE R中的常见元素集合
+		\STATE \textbf{const}\ $frequence =13$
+		\IF {$r-p+1\leq frequence$}
+		\STATE //当数组数目比较小的时候，每个元素都是常见元素
+		\RETURN $set(R)$//集合化R
+		\ENDIF
+		\STATE $q=\left\lfloor\frac{p+r}{2} \right\rfloor]$
+		\STATE $A=FOUND\_COMMON\_ELEMENTS(R,1,q)$
+		\STATE $B=FOUND\_COMMON\_ELEMENTS(R,q+1,n)$
+		\STATE $RE=\varnothing$//结果集合
+		\FOR {\textbf{each}\ $i\ \in A\cup B$}
+		\STATE $count=0$//统计$i$在$S$中出现的次数
+		\FOR{\textbf{each}\ $j \in R$}
+		\IF{(check(i,j))=true)}
+		\STATE $count=count+1$
+		\ENDIF
+		\ENDFOR
+		\IF {$count\leq \frac{|S|}{frequence}$}
+		\STATE $RE=RE\cup\{i\}$
+		\ENDIF
+		\ENDFOR
+		\RETURN RE
+	\end{algorithmic}
+\end{algorithm}
+\noindent 1.iii)\\
+\indent 算法思想：由ii)问，$x$若是$R[1..n]$的常见元素，那也至少是两个子数组中的一个数组的常见元素。所以可以先递归调用两次，把两个子数组的常见元素找出（最多有$26$个）,再逐个统计他们在$R[1...n]$中出现的个数，$T(n)=2T(\frac{n}{2})+26n$,$T(n) \in \Theta(n\log{n})$\\
+\indent 算法伪代码见\textbf{Algorithm}\  \ref{FOUNDCOMMONELEMENTS},初次调用时，令p=1,r=n\\
+
+
+\noindent 2.\\
+\indent 仍然能正常工作，算法与k的值无关。\\
+
+\noindent 3.\\
+\indent 可以有$\Theta(n)$的算法解决。算法见\textbf{Algorithm}\ \ref{onchangjianxiang}。采用PK法，存储当前遇到“最强”的元素以及他的“强度”，当新的元素到来时，如果与他相等，则“强度”加二，如果不等，则“强度”不加，当遍历的i和“强度”碰头的时候，将“最强”元素替换为新的元素。这样遍历一遍数组之后，这个“最强”元素就是$k=2$时的疑似常见项，再遍历一遍数组数一数他的个数，确定他是否为常见项。\\
+\begin{algorithm}[htbp]
+	\caption{FOUND\_COMMON\_ELEMENTS(k=2)($R[0...n-1]$)}
+	\label{onchangjianxiang}
+	\begin{algorithmic}[1]
+		\STATE  $strong\_ele=R[0]$
+		\STATE $strength=2$
+		\FOR {\textbf{$i$} in $[1,2...n-1]$}
+			\IF{$check(R[i],strong\_ele)==true$}
+				\STATE $strength+=2$
+			\ELSIF{$strength==i$}
+				\STATE $strength+=2$
+				\STATE $strong\_ele=b[i]$
+			\ENDIF
+		\ENDFOR
+		\STATE $count=0$
+		\FOR{\textbf{each} in $R[0...n-1]$}
+			\IF{$check(each,strong\_ele)==true$}
+				\STATE $count++$
+			\ENDIF
+		\ENDFOR	
+		\IF{$count\ge n/2$}
+			\RETURN {$strong\_ele$}
+		\ELSE
+			\RETURN $\varnothing$
+		\ENDIF
+	\end{algorithmic}
+\end{algorithm}
+
+
+\noindent 4.\\
+\indent 常见项问题的下界是$O(n\log{k})$,是与基于比较的排序同等难度。采用决策树模型，令$r=n/k$,利用老师给出论文\footnote{Misra, Jayadev, and David Gries. "Finding repeated elements." Science of computer programming 2.2 (1982): 143-152.}中的\textbf{r-lists}证明。论文中证明了对于$b[0...n-1]$至少有$(\frac{k}{e})^n$种不同的\textbf{r-lists}，且对于每种\textbf{r-lists}执行基于比较的算法，决策树终止于不同的叶节点。因此，我们就有$(\frac{k}{e})^n$个叶节点。\\
+\[
+	O(\log{(\frac{k}{e})^n})=O(n*\log{k}-n*\log{e})=O(n*\log{k})
+\]
+
+\section*{Problem 2.14}
+\noindent \textbf{1.1}参见\textbf{Algorithm 8}\\
+\begin{algorithm}[htbp]
+	\caption{FOUND\_MAXIMA\_WITH\_SORT($S[\ ]$,$n$)}
+	\begin{algorithmic}[1]
+		\REQUIRE $S[1...n]=$\{所有点坐标的数组\}//约定可以通过$S[1].x$，这种形式访问x坐标分量，y类似
+		\ENSURE $maxima$
+		\STATE $sort(S)$//将S以x轴坐标降序排序，当x轴坐标相同时，以y轴坐标降序排。
+		\STATE $maxy=S[1].y$
+		\STATE $index=1$
+		\WHILE {$S[index+1].x==S[1].x$}
+			\STATE $index++$
+		\ENDWHILE
+		\STATE  //横坐标最大的点一定是$maxima$
+		\STATE add\ $S[1...index]$\ to\ $maxima$
+		\STATE //对于剩下的点
+		\FOR {\textbf{each}\ in\ $S[index+1\ ...n]$}
+			\IF{$each.y \ge maxy$}
+				\STATE add\ $each$\ to\ $maxima$
+				\STATE $maxy=each.y$//更新maxy
+			\ENDIF
+		\ENDFOR		
+		\RETURN {maxima}
+	\end{algorithmic}
+\end{algorithm}
+
+\noindent \textbf{1.2}参见\textbf{Algorithm 9}\\
+\begin{algorithm}[htbp]
+	\caption{FOUND\_MAXIMA\_DIVIDE\&CONQUER($S$)}
+	\begin{algorithmic}[1]
+		\REQUIRE $S=\{(x_1,y_1),(x_2,y_2)...(x_n,y_n)\}\}$//S为输入点坐标无序集
+		\ENSURE $maxima$集合
+		\STATE //basecase:
+		\IF{$S==\varnothing$}
+			\RETURN {$\varnothing$}
+		\ELSIF {S中每个点的x坐标均相同,即点在一条竖线上}
+			\RETURN {$S$}
+		\ENDIF
+		\STATE 通过$\Theta(n)$的算法，将S集合分为左一半和右一半--黄鱼说的可以这样假设.
+		\STATE $S=\{A,B\}$
+		\STATE RA=FOUND\_MAXIMA\_DIVIDE\&CONQUER($A$)
+		\STATE RB=FOUND\_MAXIMA\_DIVIDE\&CONQUER($B$)
+		\STATE $RESULT=RB$
+		\STATE find the point which has the biggest y value in $RB$, we assume its y value is \textbf{maxy}
+		\FOR {\textbf{each\_point} in $RA$}
+			\IF{$each\_point.y\ge maxy$}
+				\STATE $RESULT=RESULT\cup \{each\_point\}$
+			\ENDIF
+		\ENDFOR
+		\RETURN {$RESULT$}
+	\end{algorithmic}
+\end{algorithm}
+
+\noindent \textbf{2.}\\
+\indent 两种思路的错误本质之处都是一样的
+\begin{itemize}
+\item 对于第一种思路，思路想均衡得分开那些点，但我们总能找到情况使得这四个象限里的点数差别很大。比如右上角全是点，而其他象限点则只有一个。此时，递归式应该是$T(n)=T(n-2)+T(1)+T(1)+O(n)$,原递归式$T(n)=3T(\frac{n}{4})+O(n)$也就不成立了。\\
+
+\item 对于第二种思路有两个错误。一是如果左下象限都没有点，我们就没有办法减少问题规模进行divide\&conquer了，递归式也就不成立了;二是我们无法在$O(n)$的复杂度之内完成Conquer步骤。\\
+\end{itemize}
+
+\noindent \textbf{3.}\\
+\indent 只需要证明该算法的下界是$\Theta(n\log{n})$即可说明问题。\\
+\indent 决策树的叶节点是具有如下性质的maxima点\textbf{序列}\\
+\begin{itemize}
+	\item 定义一种集合叫\textbf{binding}集合,他是具有这样性质的集合:集合中只有一个$maxima$点或者两个$maxima$点，分别叫$1-binding$和$2-binding$,$2-binding$内部是无序的。
+	\item 由于一次比较最多产生一对$maxima$点，也即最多产生一个\textbf{binding}集合。
+	\item 决策树叶节点序列是这样的若干个\textbf{binding}集合的有序排列。
+\end{itemize}
+\indent 下面我证明这颗决策树至少有$\Theta(n!)$个叶节点
+\indent 设某次算法执行后的结果序列中有$k$个maxima点，其中有$i$个\textbf{2-binding},$k-2i$个\textbf{1-binding},我们计算可能的结果序列有多少种。\\
+首先从$i+(k-2i)$个\textbf{bindings}中选i个位置给\textbf{1-binding},是$ C_{k-i}^{i}$。接着我们把k个maxima点，随机地排入这些\textbf{bindings}中，注意到其中的\textbf{2-binding}的内部两个点的在结果序列中的顺序是我们不关心的，所以是$\frac{A_k^k}{2^i} $。\\
+\indent
+接着，我们对所有的k和i求和，注意到k的取值是从1到n,i的取值是0到$\frac{k}{2}$\\
+
+\begin{align}
+	\sum_{k=1}^{n}\sum_{i=0}^{\frac{k}{2}} C_{k-i}^i\frac{A_k^k}{2^i} 
+				&>\sum_{k=1}^{n}A_k^k\sum_{i=0}^{\frac{k}{2}}\frac{1}{2^i}\nonumber\\
+				&=\sum_{k=1}^{n}A_k^k(2-(\frac{1}{2})^\frac{k}{2})\nonumber\\
+				&>A_n^n(2-(\frac{1}{2})^\frac{k}{2})\nonumber\\
+				&=\Theta(n!)\nonumber\\
+				\nonumber
+\end{align}
+
+\indent 证得之后我们即可有决策树叶节点个数$l\ge n!$,即有\\
+\begin{align}
+	n!\le l \le 2^h\nonumber\\
+	h &\ge \log{n!}\nonumber\\
+	h&=\Omega(n\log{n})\nonumber
+\end{align}
+因此，我们有算法下界为$\Theta(n\log{n})$
+%\begin{itemize}
+%	\item 每个内部结点都有一个label $(A,B)$,用于表示本次进行比较的是A和B两个点
+%	\item 每个内部结点都有三个儿子结点，分别指向的是A支配B，A与B谁都不支配谁，B支配A
+%	\item 每个叶节点都有一个label $YES\ or\ NO$，用于指示该
+%	
+%\end{itemize}
+
+
+\section*{Problem 2.17}
+\indent 根据水平方向的坐标把平面上的N个点均分成两部分Left和Right，且这两个部分的点数差不多。假设递归求出了Left和Right两个部分最近的点对之最短距离为MinDist(Left)和MinDist(Right)，现在我们只要考虑点对中一个点在Left部分，另一个点在Right部分。\\
+\indent 我们取MDist=$min(MinDist(Left),MinDist(Right))$,则在中轴线两边各MDist距离的点，不可能是最近点对。\\
+\indent 我们在这个带状区域考虑，如果一个点对的距离小于MDist，那么它们一定在一个MDist*(2*MDist)的区域内。\\
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=0.35\textwidth]{2-11.png}
+	\caption{}\label{fig:digit}
+\end{figure}
+\indent 而在这左右两个MDist*MDist正方形区域内，最多都只能含有4个点。如果超过4个点，则这个正方形区域内至少有一个点对的距离小于Mdist，矛盾了。因此，一个MDist*(2MDist)区域中最多有8个点。因此我们可以遍历$O(n)$个如图所示的矩形，每遍历一个矩形最多尝试8个点一定能找到最短距离。\\
+ \indent 因此，我们可以写出递归式：$T(n)=2T(n/2)+O(n)$，可以用主项定理(master method)解得时间复杂度$T(n)=O(n\log{n})$。加上排序一次的时间$O(n\log{n})$，因此整个算法的运行时间$T(n)= O(n\log{n})$。
+
+\end{document} 

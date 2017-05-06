@@ -1,0 +1,338 @@
+\documentclass[twocolumn]{ctexart}
+\usepackage{ctex}
+\usepackage{amsmath}
+
+%首行缩进两字符 利用\indent \noindent进行控制
+\usepackage{indentfirst}
+\setlength{\parindent}{2em}
+
+%算法包
+\usepackage{caption}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+%页边距包
+\usepackage{geometry}
+\geometry {left=2.0cm ,right=2.0cm,top=2.5cm,bottom=2.5cm}
+
+%枚举
+\usepackage{enumerate}
+
+%算法input output
+\renewcommand{\algorithmicrequire}{\textbf{Input:}} % Use Input in the format of Algorithm
+\renewcommand{\algorithmicensure}{\textbf{Output:}} % Use Output in the format of Algorithm
+
+%数学符号
+\usepackage{amssymb}
+
+%图片
+\usepackage{graphicx}
+
+%表格
+\usepackage{booktabs}
+\usepackage{multirow}
+
+\begin {document}
+	\title{Problem Set 3 Answer Sheet}
+	\author{\textbf{151220131谢旻晖}}
+	\date{}
+	\maketitle
+	
+\section*{Problem 3.4}
+\indent 算法$B$的过程如下:利用$A$找到当前的中位数，利用中位数作为pivot,进行partition操作将数组划分为左数组、median、右数组。\\
+\indent 如果$k==\frac{n}{2}$	，则已经找到\\
+\indent 如果$k<\frac{n}{2}$,则在左子数组中递归找$k$阶的数\\
+\indent 如果$k>\frac{n}{2}$,则在右子数组中递归找$k-\frac{n}{2}$阶的数
+
+\section*{Problem 3.5}
+\noindent \textbf{1.}\\
+\indent 直接对n个数进行排序，直接可得前k大的数.\\
+
+
+\noindent \textbf{2.}\\
+\indent 维护一个最大堆：首先花$O(n)$的时间对原集合建立最大堆，接着用类似堆排序的方法依次取出堆顶，再将最后一个数填入堆顶并作修复，每次花费$O(\log{n})$的时间修复堆，一共k次为$O(k\log{n})$.\\
+
+\noindent \textbf{3.}\\
+\indent 利用线性时间选择算法花$O(n)$的时间选出第k大的数，同时得到前k-1大的数集，再利用$O(k\log{k})$的时间对前k-1大的数进行排序。\\
+
+
+
+\section*{Problem 3.6}
+\noindent \textbf{1.}\\
+\begin{algorithm}[htbp]
+	\caption{FINDTHECLOSESTKELE$S[0...n-1],k$}
+	\label{closetk}
+	\begin{algorithmic}[1]
+		\STATE SORT(S,n)
+		\STATE $mid=\frac{n}{2}$
+		\STATE $p=mid-1$
+		\STATE $q=mid+1$
+		\STATE ANSWER\_SET=$\varnothing$
+		\WHILE {$|ANSWER_SET|<k$}
+		\IF{$|S[p]-S[mid]|<|S[q]-S[mid]|$}
+		\STATE //S[p]离中位数更近，选S[p]
+		\STATE ANSWER\_SET$=$ANSWER\_SET$\cup{S[p]}$
+		\STATE $p=p-1$
+		\ELSE
+		\STATE //S[q]离中位数更近，选S[q]
+		\STATE ANSWER\_SET$=$ANSWER\_SET$\cup{S[q]}$
+		\STATE $q=q+1$
+		\ENDIF
+		\RETURN ANSWER\_SET
+		\ENDWHILE
+	\end{algorithmic}
+\end{algorithm}
+\indent 算法思路:先对集合S进行排序，然后从中值M开始往两端走，比较两边的数谁离M更接近一点，直到取满k个数。\\
+算法见: \textbf{Algorithm \ref{closetk}}
+
+
+\noindent \textbf{2.}\\
+\indent 
+算法分为以下几步:\\
+	STEP 1:利用线性时间选择算法求出数组S的中位数的值，为mid\\
+	STEP 2: 计算数组每个数与中位数差的绝对值，转而存于另一个数组B中O(n)\\
+	STEP 3:求出数组B中第k+1小的数$x$（注意到其中有一个是中位数自己与中位数的差为0）\\
+	STEP 4:数组S中与mid差的绝对值小于等于$x$但不等于0的数都是最接近中位数的数\\
+	STEP 5:对选出来的最接近中位数的k个数排序\\
+整体的时间复杂度为$O(n+n+n+n+k\log{k})=O(n+k\log{k})$
+
+\section*{Problem 3.7}
+\noindent \textbf{1.}\\
+
+	\begin{algorithm}[htbp]
+		\caption{UNION\_MEDIAN\_2$(A[1...n],B[1...n],k)$}
+		\label{union median 2}
+		\begin{algorithmic}[1]
+			\STATE //basecase
+			\IF {$k==1$}
+				\RETURN {min(A[1],B[1])}
+			\ENDIF
+			
+			\IF {$A[\frac{k+1}{2}]>B[\frac{k+1}{2}]$}
+				\STATE $A=A[1...\frac{k+1}{2}]$
+				\STATE $B=B[\frac{k+1}{2}+1,...n]$
+				\STATE UNION\_MEDIAN\_2$(A,B,\frac{k+1}{2})$
+			\ELSIF  {$A[\frac{k}{2}]<B[\frac{k}{2}]$}
+				\STATE $B=B[1...\frac{k}{2}]$
+				\STATE $A=A[\frac{k}{2}+1,...n]$	
+				\STATE UNION\_MEDIAN\_2$(A,B,\frac{k}{2})$
+			\ELSE
+				\RETURN {$A[\frac{k}{2}]$}		
+			\ENDIF
+		\end{algorithmic}
+	\end{algorithm}
+
+
+
+
+
+
+\indent 算法思路：取出$A[\frac{k}{2}]$和$B[\frac{k}{2}]$,比较他们的大小，如果$A[\frac{k}{2}]$大，则更新数组A为$A=A[1,2...\frac{k}{2}]$,更新数组B为$B=B[\frac{k}{2}+1,...,n]$,反之如果$B[\frac{k}{2}]$比较大亦然，再递归的对缩小规模的A、B数组进行选择阶为$\frac{k}{2}$的元素。\\
+\indent 算法的复杂度为:
+\[
+	T(n)=T(\frac{n}{2})+O(1)
+\]
+\[
+	T(n)\in O(\log{n})
+\]
+\indent 算法伪代码见:\textbf{Algorithm \ref{union median 2}}
+
+\noindent \textbf{2.}\\
+算法思路:我们取各个数组的中位数，将他们的下标之和与k比较：若大于k，则舍弃中位数最大的那个数组的后一半进行递归；若小于k，则舍弃中位数最小的那个数组的前一半进行递归；若等于k，则是k阶元素是当前所有数组的最大中位数，已经找到。\\
+
+\noindent \textbf{3.}\\
+同上。只是数组个数不同而已。
+
+\section*{Problem 3.8}
+算法思路：维护一个最大堆和一个最小堆，最大堆中存放小于等于中位数的数（包括中位数本身），最小堆中存放大于中位数的数。这样有\\
+\indent |最大堆|=|最小堆|或|最小堆|+1。\\
+\textbf{插入元素}：当新来一个元素的时候，判断他与中位数(最大堆顶)大小关系并插入对应的堆，此时如果两个堆的大小关系不满足上式，我们就将元素多的那个堆的堆顶取出并放入另外一个堆中，并对两个堆作相应修复。\\
+\indent 时间复杂度为$T(n)=O(2\log{n})=O(\log{n})$\\
+\textbf{发现中值}:最大堆堆顶即为当前中位数。\\
+\textbf{删除中值}：删除中位数(最大堆堆顶)，将最小堆堆顶取出并加入最大堆中，并对两个堆进行修复。\\
+
+
+\section*{Problem 3.9}
+\noindent \textbf{1.}\\
+\indent 当$\omega_i=\frac{1}{n}$时，一共有$\lceil\frac{n}{2}\rceil-1$个数小于中位数，有$\lfloor\frac{n}{2}\rfloor$个数大于中位数，而对于中位数有
+\[
+	\sum_{x_i<x_k}\omega_i=(\lceil\frac{n}{2}\rceil-1)*\frac{1}{n}<\frac{1}{2}\]
+\[
+	\sum_{x_i>x_k}\omega_i=\lfloor\frac{n}{2}\rfloor*\frac{1}{n}\le\frac{1}{2}
+\]
+满足加权中位数的定义。\\
+
+
+\noindent \textbf{2.}\\
+\indent 首先对这n个数进行从小到大的排序，然后从头开始，累加他们的权直到权之和刚刚大于等于$\frac{1}{2}$,其中"压死骆驼的最后一根稻草"就是加权中位数。\\
+
+\indent 算法复杂度为：$O(n\log{n}+n)=O(n\log{n})$
+
+\noindent \textbf{3.}\\
+\begin{algorithm}
+	\caption{WEIGHT\_MEDIAN$(A,p,r)$}
+	\label{weight_median}
+	\begin{algorithmic}[1]
+	\REQUIRE {A为不相同的数，设定weight(x)可以得到x的权重}
+		\IF{$p==r$}
+			\RETURN A[p]
+		\ENDIF
+		
+		\STATE q=MEDIAN$(A,p,r)$
+		\STATE //线性选择传统中位数算法，返回A[p...r]的中位数的下标。注意到线性选择的同时，我们也完成了partition的操作。
+		\STATE $W_L=\sum_{i\in[1,q-1]}weight(A[i])$
+		\IF{$W_L<\frac{1}{2}\&\&W_L+weight(A[q])\ge\frac{1}{2}$}
+			\RETURN A[q]
+		\ELSIF{$W_L<\frac{1}{2}$}
+			\STATE $weight(A[q])+=W_L$
+			\RETURN WEIGHT\_MEDIAN(A,q,r)
+		\ELSE
+			\STATE $weight(A[q])+=1-W_L-weight(A[q])$
+			\RETURN WEIGHT\_MEDIAN(A,p,q)
+		\ENDIF	
+		
+	\end{algorithmic}
+\end{algorithm}
+
+\indent 算法思路：首先选出传统中位数，同时将整个数组partition为左右两个子数组，然后分治，其中注意要把被舍弃的一半的权重之和加在中位数上防止权重出现问题。算法伪代码见\textbf{Algorithm \ref{weight_median}}，调用时对于$A[1...n]$,令$p=1,r=n$\\
+\indent 算法复杂度：$T(n)=T(n/2)+O(n)$,$T(n)\in O(n)$\\
+
+
+\section*{Problem 4.1}
+\indent 采用折半查找的思想，每次取中间的元素$x$，设他前面的元素为$a$,后面的元素为$b$，分三种情况:\\
+\indent \textbf{case 1:} \textbf{x>a\&\&x>b} 最大元素就是x\\
+\indent \textbf{case 2:} \textbf{b>x>a}		对数组右半边进行递归\\
+\indent \textbf{case 3:} \textbf{a>x>b}		对数组左半边进行递归
+
+\section*{Problem 4.4}
+\noindent \textbf{1.}\\
+\indent 考虑一个负载因子$\alpha$,则闭哈希表空间消耗为$(1+2\alpha)h_c$,当同样的空间用于开散列，它的负载因子易算得为$\frac{\alpha}{1+2\alpha}$。\\
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{cccc}
+		\toprule
+		$\alpha$ &空间消耗& 开散列表负载因子\\
+		\midrule
+		0.25	&$1.5h_c$	& 	0.17\\		
+		0.5		&$2h_c$ 	&	0.25\\
+		1.0		&$3h_c$ 	&	0.33\\
+		2.0		&$5h_c$ 	&	0.4\\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+\noindent \textbf{2.}\\
+\indent 
+考虑一个负载因子$\alpha$,则闭哈希表空间消耗为$(1+5\alpha)h_c$,当同样的空间用于开散列，它的负载因子易算得为$\frac{4\alpha}{1+5\alpha}$。\\
+\begin{table}[!h]
+	\centering
+	\begin{tabular}{cccc}
+		\toprule
+		$\alpha$ &空间消耗& 开散列表负载因子\\
+		\midrule
+		0.25	&$2.25h_c$	& 0.44	\\		
+		0.5		&$3.5h_c$ 	& 0.57	\\
+		1.0		&$6h_c$ 	& 0.67	\\
+		2.0		&$11h_c$ 	& 0.73	\\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+\section*{Problem 4.6}
+\noindent \textbf{1.}\\
+\indent 每次取出矩阵中右上角的元素y,比较x和y的大小:\\
+\indent \textbf{case 1 :x==y}已经找到\\
+\indent \textbf{case 2 :x>y}舍去矩阵的第一行，再进行递归\\
+\indent \textbf{case 3 :x<y}舍去矩阵的最后一列，再进行递归\\
+\indent 当矩阵只剩一行，仍要舍去该行时，抑或是只剩一列，仍要舍去该列时，则无法找到。\\
+
+\noindent \textbf{ 2.}\\
+\indent 算法worst case分析:可以看到本算法每次比较消去一列或一行,而矩阵为$m*n$规模，算法通过$m+n-2$次比较将规模降为$1*1$后，仍需要一次确认最后一个元素是不是要找的$x$,所以最坏情况下需要比较$m+n-1$次。
+
+\section*{Problem 4.7}
+\noindent \textbf{(a)}\\
+\indent 维护一棵红黑树，对n个元素依次作如下操作:不妨当前元素为x\\
+\noindent \textbf{step 1}:在已有的红黑树中查找关键码为$a-x$的结点是否存在。若存在，则已经找到，若不存在进入\textit{step 2}。\\
+\noindent \textbf{step 2}:将x插入红黑树\\
+\indent 当n个元素全部操作完，仍然没找到，则S中不存在两个元素的和为a。\\
+\indent 复杂度分析:红黑树的插入、查找均为$O(\log{n})$，最坏情况下进行n次插入和查找，所以整体复杂度为$O(n\log{n})$
+
+\begin{algorithm}[htbp]
+	\caption{FIND\_SUM\_A$(S[0...n])$}
+	\label{find sum a}
+	\begin{algorithmic}[1]
+		\STATE $head=0$
+		\STATE $rear=n-1$
+		\WHILE{head<rear}
+			\IF{$S[head]+S[rear]>a$}
+				\STATE $rear=rear-1$
+			\ELSIF{$S[head]+S[rear]<a$}
+				\STATE $head=head+1$
+			\ELSE 
+				\STATE //$S[head]+S[rear]=a$ 
+				\RETURN {$[head,rear]$}
+			\ENDIF
+		\ENDWHILE
+	\RETURN CANTFIND
+	\end{algorithmic}
+\end{algorithm}
+
+\noindent \textbf{(b)}\\
+\indent 利用head、rear两个变量指示，考虑S[head]+S[rear]的和与a的大小关系，移动相应的指示变量。算法伪代码见\textbf{Algorithm \ref{find sum a}}
+
+\section*{Problem 4.8}
+\noindent \textbf{(a)}\\
+\indent 利用数学归纳法对树高度进行归纳。如果T的高度为0，则T必为NIL，此时有0个内部结点，满足$0\geq2^h-1=0$。对于归纳步骤，考虑一个高度为正值且有两个子树的T，每个子树有黑高h或h-1,取决于自身的颜色是红还是黑。由于T的子树的高度比T的高度要低，可以利用归纳假设得出每个子节点至少有$2^{h-1}-1$个内部黑色节点。于是子树T至少包含$(2^{h-1}-1)+(2^{h-1}-1)+1=2^h-1$个内部黑色节点。因此得证。\\
+
+
+\noindent \textbf{(b)}\\
+\indent 利用数学归纳法对树高度进行归纳。如果T的高度为0，则T必为NIL，此时有0个内部结点，满足$0\leq4^h-1=0$。对于归纳步骤，考虑一个高度为正值且有两个子树的T，为了获得最多的内部节点数，两个子树应都是准红黑树以充分利用原红黑树的黑高，此时内部结点数=根节点+双子树结点+双子树的四个儿子子树（不妨叫孙子子树）。而这四个孙子子树的高度比T的高度要低，可以利用归纳假设得出每个孙子子树至多有$4^{h-1}-1$个内部节点。内部节点数$\leq1+2++4*(4^{h-1}-1)=4^h-1$。因此得证。\\
+
+
+
+
+\noindent \textbf{(c)}\\
+\indent 由红黑树性质，红结点的两个子节点是黑色。所以从根节点到任意黑色节点的任何一条简单路径上都至少有一半的结点为黑色。因此得证。\\
+
+\noindent \textbf{(d)}\\
+\indent 可以利用\textbf{(a)}中的结论。准红黑树的两个子树一定是红黑树，且有黑高为$h-1$,则A至少有的内部黑色结点数为两子树至少有的黑色结点数之和$2^{h-1}-1+2^{h-1}-1=2^h-2$
+
+\noindent \textbf{(e)}\\
+\indent 可以利用\textbf{(b)}中的结论。准红黑树的两个子树一定是红黑树，且有黑高为$h-1$,则A至多有的内部结点数为两子树至多有的结点数之和加上根节点为$4^{h-1}-1+4^{h-1}-1+1=\frac{4^h}{2}-1$
+
+\noindent \textbf{(f)}\\
+\indent 与\textbf{c}同理，RBT和ARBT均满足红结点的两个子节点是黑节点的性质。\\
+\section*{Problem 4.9}
+\[
+C_n^1*(\frac{1}{n})^k=\left(\frac{1}{n}\right)^{k-1}
+\]
+
+\section*{Problem 4.10}
+\indent 利用并查集，首先处理所有等式约束，对于$a=b$,在并查集中union(a,b);然后处理所有不等式约束，对于$a\neq b$,在并查集中检查是否有$find_set(a)\neq find_set(b)$,如果该式不成立，则约束不可同时满足，检查完所有不等式约束后则可以m个约束同时满足。
+
+\section*{Problem 4.12}
+\indent 首先我们容易得到n位比特数的加法的复杂度为$O(1)$,n位比特的乘法的复杂度为$O(n)$.
+\\
+算法为:\\
+设
+\[
+2^{\frac{n-1}{2}} \le \sqrt{N} \le 2^{\frac{n}{2}}
+\]
+因此有
+\[2^{\lfloor \frac{n-1}{2} \rfloor} \le \lceil \sqrt{N} \rceil \le 2^{\lceil \frac{n}{2} \rceil}
+\]
+
+\[
+t_1 \triangleq \lfloor \frac{n-1}{2} \rfloor + 1 \le t \le \lceil \frac{n}{2} \rceil + 1 \triangleq t_2
+\]
+在$2^{t_1}$和$2^{t_2}$之间进行二分查找$\left\lceil \sqrt{N} \right\rceil)$，对于每个$x$,利用$O(n)$的时间计算出他的平方。\\
+算法复杂度分析:我们可列出递归式$T(n)=T(n-1)+O(n)$,解递归易得$T(n) \in O(n^2)$
+
+
+\section*{Problem 4.13}
+\indent 使用聚合分析的方法，n个操作的代价之和为
+\[\sum_{i=1}^{n}c_i=\sum_{j=0}^{\left\lfloor\log{n}\right\rfloor}\left\lfloor\frac{n}{2^j}\right\rfloor2^j\le n(\left\lfloor \log{n}\right\rfloor+1)
+\]
+
+所以，每个插入操作的平摊代价为$1+\left\lfloor \log{n} \right\rfloor$
+\end {document}
