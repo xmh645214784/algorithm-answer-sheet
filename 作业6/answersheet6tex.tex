@@ -78,15 +78,15 @@
 \indent 据此可写出动态规划算法，$f(1)=0$,计算$f(i)$时,从i:2$\rightarrow$n自底向上计算。最终$f(n)$为所求答案。\\
 
 \section*{Problem 7.3}
-\indent 新建数组$f[1..n]$,$pre[1..n]$,$f[i]$记录下当前以$A[i]$结束的最长非递减子序列的长度。$pre[.]$用于记录下以该元素为结尾的最大非递减子序列的前驱。当新的一个元素加入时，判断之前的所有元素是否小于等于当前元素，取其中可以形成最长单调非递减子序列的元素，更新$pre$和$f$.\\
+\indent 新建数组$f[1..n]$,$pre[1..n]$,$f[i]$记录下当前以$A[i]$结束的最长非递减子序列的长度。$pre[i]$用于记录下以$A[i]$为结尾的最大非递减子序列的前驱。当新的一个元素加入时，判断之前的所有元素是否小于等于当前元素，取其中小于的，也即可以形成最长单调非递减子序列的元素，更新$pre$和$f$.\\
 \indent 算法见\textbf{Algorithm \ref{longest increasing}}
 
 \begin{algorithm}[htbp]
 	\caption{LONGEST\_INCREASING\_SUBsq}
 	\label{longest increasing}
 	\begin{algorithmic}[1]
-		\STATE $f[1...n]={1}$
-		\STATE $pre[1...n]={1,2...n}$
+		\STATE $f[1...n]=\{1\}$
+		\STATE $pre[1...n]=\{1,2...n\}$
 		\FOR{\textbf{i} in $[2,n]$}
 			\FOR{\textbf{j} in $[1,i-1]$}
 				\IF {$A[i] \ge A[j] $ \textbf{and} $f[i]<f[j]+1$}
@@ -115,7 +115,7 @@
 
 \noindent \textbf{2.}\\
 \indent 利用两个数组$min[1...n]$,$max[1...n]$,$min[i]$和$max[i]$分别存储以$A[i]$结尾的乘积最小和乘积最大的子数组。\\
-\indent 易得转移方程为:其中注意$A[i]$自己也可以构成一个平凡的数组。
+\indent 易得转移方程为:\\
 \[
 max[i]=
 \begin{cases}
@@ -130,7 +130,8 @@ A[1] &i==1\\
 min(A[i],min[i-1]*A[i],max[i-1]*A[i])&else
 \end{cases}
 \]
-\indent 最后算法求出max[1..n]中的最大值,并向前进行重构解，算法伪代码见\textbf{Algorithm \ref{max_product_array}}。
+\indent 其中注意$A[i]$自己也可以构成一个平凡的数组。\\
+\indent 最后算法求出max[1..n]中的最大值即为最大的乘积,并向前进行重构解，算法伪代码见\textbf{Algorithm \ref{max_product_array}}。
 \begin{algorithm}[htbp]
 	\caption{MAX\_PRODUCT\_SUBARRAY}
 	\label{max_product_array}
@@ -195,23 +196,23 @@ min(A[i],min[i-1]*A[i],max[i-1]*A[i])&else
 	\caption{PRINT\_LCS(i,j)}
 	\label{print_lcs}
 	\begin{algorithmic}[1]
-		\IF{$i==0 $or $j==0$}
+		\IF{$i==0 $ \textbf{or} $j==0$}
 			\RETURN { }
 		\ENDIF
 		\IF {$b[i,j]==\nwarrow$}
-			\STATE PRINT\_LCS(i-1,j-1)
+			\STATE PRINT\_LCS$(i-1,j-1)$
 			\STATE print $X_i$
 		\ELSIF {$b[i,j]==\uparrow$}
-			\STATE PRINT\_LCS(i-1,j)
+			\STATE PRINT\_LCS$(i-1,j)$
 		\ELSE
-			\STATE PRINT\_LCS(i,j-1)
+			\STATE PRINT\_LCS$(i,j-1)$
 		\ENDIF
 	\end{algorithmic}
 \end{algorithm}
 
 
 \noindent \textbf{2.}\\
-	\indent 只需将转移方程改为
+	\indent 只需将转移方程改为\\
 	\[
 	c[i,j]=
 	\begin{cases}
@@ -223,7 +224,7 @@ min(A[i],min[i-1]*A[i],max[i-1]*A[i])&else
 	算法也对应位置作改动即可，不再赘述。\\
 \noindent \textbf{3.}\\
 \indent 1.和2.的综合体.\\
-\indent 利用一个数组count[1..m]记录下X中字符出现的次数，初始化为0。当次数小于k时，$X_i==Y_j$时$c[i,j]=c[i,j-1]+1$，同时对应字符出现次数加一;当次数大于等于k时,，$X_i==Y_j$时$c[i,j]=c[i-1,j-1]+1$.
+\indent 利用一个数组count[1..m]记录下X中字符出现的次数，初始化为0。当次数小于k时，$X_i==Y_j$时$c[i,j]=c[i,j-1]+1$，同时对应字符出现次数加一;当次数大于等于k时,，$X_i==Y_j$时$c[i,j]=c[i-1,j-1]+1$.\\
 
 \section*{Problem 7.6}
 %\indent 将7.5的转移方程改为
@@ -238,13 +239,13 @@ min(A[i],min[i-1]*A[i],max[i-1]*A[i])&else
 %算法也作对应改动，最短公共超序列为c[m,n].\\
 \indent 求A和B的LCS长度为$l$,则最短公共超序列长度为$m+n-l$.\\
 
-\section*{Problem 7.7}
+%\section*{Problem 7.7}
 
 \section*{Problem 7.8}
-\indent 首先因为前向和后向的字符串不能够重叠，令$m=|\frac{n}{2}|$,所以将字符串的两个子串$T[1...m]$和$T[m+1...n]$取出，将第二个子串倒序，令倒序后的字符串为$M[1...m]$，这样原问题就被转化为求$T[1..m]$和$M[1...m]$的相同的最长连续子串的长度。\\
-\indent c[i,j]指示了以T[i]和M[j]结尾的最长连续子串的长度，如果T[i]==M[j],则c[i,j]=以T[i-1]和M
-[j-1]结尾的最长连续子串的长度加一，否则就为0。
-\indent 转移方程为
+\indent 首先因为前向和后向的字符串不能够重叠,双子串一定是在原串的左边一半中和右边一半中,令$m=\left\lfloor\frac{n}{2}\right\rfloor$,所以将字符串的两个子串$T[1...m]$和$T[m+1...n]$取出，将第二个子串倒序，令倒序后的字符串为$M[1...m]$，这样原问题就被转化为求$T[1..m]$和$M[1...m]$的相同的最长连续子串的长度。\\
+\indent $c[i,j]$指示了$T[1...i]$和$M[1...j]$最长连续子串的长度，如果$T[i]==M[j]$,则$c[i,j]=$以$T[i-1]$和$M
+[j-1]$结尾的最长连续子串的长度加一，否则就为0。
+\indent 从上得，转移方程为
 \[
 c[i,j]=
 \begin{cases}
@@ -253,7 +254,7 @@ c[i-1,j-1]+1 &if\ X_i==Y_j\\
 0 &else
 \end{cases}
 \] 
-\indent 最终返回c[1...m,1...m]中的最大值。算法伪代码和之前类似,稍作改动，见\textbf{Algorithm \ref{LCString}}
+\indent 最终返回c[1...m,1...m]中的最大值。算法伪代码和之前类似,稍作改动，见\textbf{Algorithm \ref{LCString}}.\\
 \begin{algorithm}[htbp]
 	\caption{LCString\_LEN}
 	\label{LCString}
@@ -278,36 +279,36 @@ c[i-1,j-1]+1 &if\ X_i==Y_j\\
 	\end{algorithmic}
 \end{algorithm}
 
-\indent 突然发现可以将二维矩阵c降维为一维矩阵c[1...m],因为从转移方程来看，每一行只会被他之后的一行所使用，所以我们只需要使用一行矩阵存储结果就可以了。\\
-\indent 因此，有新的转移方程为
-\[
-c[j]=
-\begin{cases}
-c[j-1]+1 &if\ X_i==Y_j\\
-0 &else
-\end{cases}
-\] 
-算法伪代码见\textbf{Algorithm \ref{LCString——modify}}，稍作改动就可以了。这就把空间复杂度降为$O(n)了$\\
-\begin{algorithm}[htbp]
-	\caption{LCString\_Modify}
-	\label{LCString——modify}
-	\begin{algorithmic}[1]
-		\STATE $c[0...m]$
-		\FOR{i=1 \textbf{to} m}
-		\STATE $c[i]=0$
-		\ENDFOR
-		\FOR {i=1 \textbf{to} m}
-		\FOR{j=1 \textbf{to} m}
-		\IF{$X_i==Y_j$}
-		\STATE $c[j]=c[j-1]+1$
-		\ELSE
-		\STATE $c[j]=0$
-		\ENDIF
-		\ENDFOR
-		\ENDFOR
-		\RETURN {max of $c[1..m]$}
-	\end{algorithmic}
-\end{algorithm}
+%\indent 突然发现可以将二维矩阵c降维为一维矩阵$c[1...m]$,因为从转移方程来看，每一行只会被他之后的一行所使用，所以我们只需要使用一行矩阵存储结果就可以了。\\
+%\indent 因此，有新的转移方程为
+%\[
+%c[j]=
+%\begin{cases}
+%c[j-1]+1 &if\ X_i==Y_j\\
+%0 &else
+%\end{cases}
+%\] 
+%算法伪代码见\textbf{Algorithm \ref{LCString——modify}}，稍作改动就可以了，这就把空间复杂度降为$O(n)$了。\\
+%\begin{algorithm}[htbp]
+%	\caption{LCString\_Modify}
+%	\label{LCString——modify}
+%	\begin{algorithmic}[1]
+%		\STATE $c[0...m]$
+%		\FOR{i=1 \textbf{to} m}
+%		\STATE $c[i]=0$
+%		\ENDFOR
+%		\FOR {i=1 \textbf{to} m}
+%		\FOR{j=1 \textbf{to} m}
+%		\IF{$X_i==Y_j$}
+%		\STATE $c[j]=c[j-1]+1$
+%		\ELSE
+%		\STATE $c[j]=0$
+%		\ENDIF
+%		\ENDFOR
+%		\ENDFOR
+%		\RETURN {max of $c[1..m]$}
+%	\end{algorithmic}
+%\end{algorithm}
 
 \section*{Problem 7.9}
 \indent 新建$c[1...n]$,$c[i]$指示以$s[1...i]$是否可以重建为由合法单词组成的序列,新建$pre[1...n]$用于重构解,$pre[i]$指示最后一个合法单词为$s[pre[i]+1....i]$。
@@ -316,7 +317,7 @@ c[j-1]+1 &if\ X_i==Y_j\\
 c[i]=
 \begin{cases}
 TRUE & i==0\\
-c[i-1]\&\&dict(s[i])||c[i-2]\&\&dict(s[i-1,i])||......||c[0]\&\&dict(s[1,2...i]) &else
+c[i-1]\&\&dict(s[i])|\ |c[i-2]\&\&dict(s[i-1,i])|\ |......|\ |c[0]\&\&dict(s[1,2...i]) &else
 \end{cases}
 \] 
 \begin{algorithm}[htbp]
@@ -356,4 +357,168 @@ c[i-1]\&\&dict(s[i])||c[i-2]\&\&dict(s[i-1,i])||......||c[0]\&\&dict(s[1,2...i])
 \end{algorithm}
 
 \indent 算法伪代码见\textbf{Algorithm \ref{DICT}},重构解算法伪代码见\textbf{Algorithm \ref{PrintDICT}}.
+
+\section*{Problem 7.10}
+\noindent \textbf{1.}\\
+\indent 设原来的字符串为$s[1...n]$,新建$c[1...n,1...n]$,$c[i][j]$指示$s[i...j]$的最长回文子序列的长度：如果$s[i]==s[j]$，则$c[i][j]=c[i+1][j-1]+2$,否则$c[i][j]=max(c[i][j-1],c[i-1][j])$.此外还有base case单个的字符c[i][i]=1.\\
+\indent 因此有转移方程为:\\
+\[
+c[i][j]=
+\begin{cases}
+	1 & i==j\\
+	2 & j-i==2\&\&s[i]==s[j]\\
+	2+c[i+1][j-1] &s[i]==s[j]\\
+	max(c[i][j-1],c[i-1][j]) & s[i]\ne s[j]
+\end{cases}
+\]
+\indent 为了自底向上的扩展，考虑长度的递增，算法伪代码见\textbf{Algorithm \ref{longest_huiwen}}.\\
+\begin{algorithm}[htbp]
+	\caption{LONGEST\_HUIWEN}
+	\label{longest_huiwen}
+	\begin{algorithmic}[1]
+		\STATE $c[1...n][1...n]$
+		\FOR{$i=1$ \textbf{to} $n$}
+			\STATE $c[i][i]=1$
+		\ENDFOR
+		
+		\FOR{$len=2$ \textbf{to} $n$}
+			\FOR{$i=0$ \textbf{to} $n-len+1$}
+				\STATE $j=i+len-1$
+				\IF{$s[i]==s[j]$}
+					\IF{$len==2$}
+						\STATE $c[i][j]=2$
+					\ELSE
+						\STATE $2+c[i+1][j-1]$
+					\ENDIF				
+				\ELSE
+					\STATE $max(c[i][j-1],c[i-1][j])$
+				\ENDIF
+			\ENDFOR
+		\ENDFOR
+		\RETURN {$c[1][n]$}
+	\end{algorithmic}
+\end{algorithm}
+\indent 此外亦可使用LCS的办法，求原串和颠倒后的原串的LCS，就是满足条件的最长回文子序列。\\
+
+
+\noindent \textbf{2.}\\
+\indent 新建$c[0...n]$,其中$c[0]=0$,$c[i]$指示以$s[1...i]$可以拆分的最少的回文数量。\\
+\indent 易得有如下转移方程:\textbf{其中的整数集K为所有使得A[k+1,k+2...i]为回文的整数},即$K=\{k\in Z |A[k+1,k+2...i]\text{是回文}\}$.\\
+$$
+c[i]=
+\begin{cases}
+0 & i==0\\
+1+\min \limits_{k\in K}{c[k]} &else
+\end{cases}
+$$
+\indent 算法伪代码见\textbf{Algorithm \ref{HUIWEN}},最终$c[n]$的值为字符串可以拆分为的最少的回文数量。其中函数\textbf{isHuiWen}指示了某个串是否是回文的。\\
+\begin{algorithm}[htbp]
+	\caption{HUIWEN}
+	\label{HUIWEN}
+	\begin{algorithmic}[1]
+		\STATE $c[0...n]$
+		\STATE $c[0]=0$
+		\FOR{$i=1$ \textbf{to} $n$}
+			\STATE $temp=+\infty$
+			\FOR {$k=0$ \textbf{to} $i-1$}
+				\IF{isHuiWen(A[k+1,k+2,...i])==TRUE}
+					\STATE $temp=min(temp,1+c[k])$
+				\ENDIF
+			\STATE $c[i]=temp$
+			\ENDFOR
+		\ENDFOR
+		\RETURN {$c[n]$}
+	\end{algorithmic}
+\end{algorithm}
+
+
+\section*{Problem 7.11}
+\indent 设字符串为$s[1...n]$,$c[i][j]$指示了$s[i...j]$最小分割代价。如果i到j中没有分割点了，那么代价就为0；如果有分割点，最小分割代价为选择其中的某个分割点使得产生最小的左右子串最小分割代价和加上字符串本身的长度。因此，易得转移方程为:其中M为分割点\\
+$$
+c[i][j]=
+\begin{cases}
+0 & \text{if none M in }s[i...j]\\
+j-i+1+\min \limits_{M} (c[i][M]+c[M+1][j])&else
+\end{cases}
+$$
+\indent 算法伪代码见\textbf{Algorithm \ref{part string}}.时间复杂度为$O(mn^2)$
+\begin{algorithm}[htbp]
+	\caption{PARTING\_STRING}
+	\label{part string}
+	\begin{algorithmic}[1]
+		\STATE $c[1...n,1...n]$
+%		\FOR {$i=1$ \textbf{to} $n$}
+%			\STATE c[i][i]=0
+%		\ENDFOR
+		\FOR{$len=2$ \textbf{to} $n$}
+			\FOR{$i=0$ \textbf{to} $n-len+1$}
+				\STATE $j=i+len-1$
+				\IF{no M in s[i...j]}
+					\STATE $c[i][j]=0$
+				\ELSE
+					\STATE $temp=+\infty$
+					\FOR {\textbf{each} $M_i$ in s[i...j]}
+						\STATE $temp=min(temp,c[i][M_i]+c[M_i+1][j])$
+					\ENDFOR
+					\STATE $c[i][j]=temp+len$
+				\ENDIF
+			\ENDFOR
+		\ENDFOR
+		\RETURN {$c[1][n]$}
+	\end{algorithmic}
+\end{algorithm}
+
+\section*{Problem 7.13}
+\indent 设$T(root)$指示以$root$为根的树的最小顶点覆盖的大小，那么如果选了$root$,$T(root)=1+\sum\limits_{w\in Children(root)}T(w)$;如果没选$root$,$root$的孩子们就都要选,$T(root)=|Children(root)|+\sum\limits_{z\in Grandchildren(root)}T(z)$.$T(root)$应为上面两者中较小的那个.\\
+\indent 由上述，可以得到$T(root)$的转移方程为：\\
+$$
+T(root)=
+\begin{cases}
+0		& root\text{为叶节点}\\
+min(1+\sum\limits_{w\in Children(root)}T(w),|Children(root)|+\sum\limits_{z\in Grandchildren(root)}T(z))		&else
+\end{cases}
+$$
+\indent 据此可以写出一个动态规划算法，自树叶结点向上计算，利用一个$O(|V|)$的空间存储最小顶点覆盖大小。\\
+
+\section*{Problem 7.15}
+\indent 首先假设两两旅馆之间的距离均小于等于200公理，即不存在一天走完都找不到旅馆休息的问题。
+\indent 新建$c[1...n]$,$pre[1...n]$其中$c[1]=(200-a_1)^2$,$c[i]$指示到$a_i$最小总惩罚,$pre[i]$指示这个最小总惩罚停留序列的前一站为$a_{pre[i]}$,用以重构解.\\
+\indent 易得有如下转移方程:
+$$
+c[i]=
+\begin{cases}
+(200-a_1)^2 & i==1\\
+\min \limits_{\text{all $a_S$ that }a_i-a_S<200} \left((200-a_i+a_S)^2+c[S] \right) & else
+\end{cases}
+$$
+\indent 算法见\textbf{Algorithm \ref{travel}},最优位置序列的重构解程序见\textbf{Algorithm \ref{print_travel}}
+\begin{algorithm}[htbp]
+	\caption{TRAVERING}
+	\label{travel}
+	\begin{algorithmic}[1]
+		\STATE $c[1...n]={+\infty}$//初始化为正无穷
+		\STATE $c[1]=(200-a_1)^2$
+		\STATE $pre[1...n]={0}$//全部初始化为0
+		\FOR {$i=2$ \textbf{to} $n$}
+			\FOR {\textbf{all} $a_S$ that $a_i-a_S<200$}
+				\IF{$c[i]>c[S]+(200-a_i+a_S)^2$} 
+					\STATE $c[i]=c[S]+(200-a_i+a_S)^2$
+					\STATE $pre[i]=S$
+				\ENDIF
+			\ENDFOR
+		\ENDFOR
+		\RETURN {$c[n]$}
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[htbp]
+	\caption{PRINT\_TRAVERING(n)}
+	\label{print_travel}
+	\begin{algorithmic}[1]
+	\IF{$n\ne 0$}
+		\STATE PRINT\_TRAVERING($pre[n]$)
+		\STATE print $n$
+	\ENDIF
+	\end{algorithmic}
+\end{algorithm}
 \end {document}
