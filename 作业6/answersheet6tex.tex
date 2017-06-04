@@ -1,0 +1,359 @@
+\documentclass[onecolumn]{ctexart}
+\usepackage{ctex}
+\usepackage{amsmath}
+
+%首行缩进两字符 利用\indent \noindent进行控制
+\usepackage{indentfirst}
+\setlength{\parindent}{2em}
+
+%算法包
+\usepackage{caption}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+%页边距包
+\usepackage{geometry}
+\geometry {left=2.0cm ,right=2.0cm,top=2.5cm,bottom=2.5cm}
+
+%枚举
+\usepackage{enumerate}
+
+%算法input output
+\renewcommand{\algorithmicrequire}{\textbf{Input:}} % Use Input in the format of Algorithm
+\renewcommand{\algorithmicensure}{\textbf{Output:}} % Use Output in the format of Algorithm
+
+%数学符号
+\usepackage{amssymb}
+\usepackage{wasysym}
+%图片
+\usepackage{graphicx}
+
+%表格
+\usepackage{booktabs}
+\usepackage{multirow}
+
+%Tikz画图
+\usepackage{tikz}
+\usetikzlibrary{arrows,graphs} %指明是图库
+\usetikzlibrary{positioning,automata}
+
+%\usegdlibrary
+\begin {document}
+	\title{Problem Set 6 Answer Sheet}
+	\author{\textbf{151220131谢旻晖}}
+	\date{}
+	\maketitle
+
+
+
+\section*{Problem 7.1}
+\indent 假设集合A中的$s_1,s_2...s_n$已经按升序排好序,$\sum A$为A中所有元素之和。\\
+\indent 设$f(i,sum)$是这样的一个函数，指示了集合{$s_1,s_2,...s_i$}中是否存在子集使得元素的和为sum,如果存在返回true,否则返回false.\\
+
+%$$
+%f(i,sum)=
+%\begin{cases}
+%false&\text{i<=0 or sum<0 or sum>$\sum A$}\\
+%s_i==sum||f(i-1,sum)||\\f(i-1,sum-s_i)& \text{else}
+%\end{cases}
+%$$
+%
+\indent 如果$i<=0$ or $sum<0$ or $sum>\sum A$,则
+\[f(i,sum)=false\]
+\indent 其余情况下易得转移方程为
+\[f(i,sum)=\left(s_i==sum||f(i-1,sum)||f(i-1,sum-s_i)\right)\]
+\indent 据此可写出动态规划算法，计算$f(i,sum)$时，从i:1->n,sum:0->S自底向上计算。最终$f(n,S)$为所求答案。\\
+
+\section*{Problem 7.2}
+\indent 设$f(n)$为将n变为1最少需要的操作,$f(n)$的值为$f(n-1)$、$f(n/2)$(如果n是偶数)、$f(n/3)$(如果n是3的倍数)三者中最小的加一。由此可得转移方程为:\\
+首先,
+ \[temp=1+f(n-1)\]
+当$n\%2==0$时,
+		\[temp=min(temp,1+f(\frac{n}{2}))\]
+当$n\%3==0$时,
+\[temp=min(temp,1+f(\frac{n}{3}))\]
+最终$temp$的值是$f(n)$的值:
+\[f(n)=temp\]
+
+\indent 据此可写出动态规划算法，$f(1)=0$,计算$f(i)$时,从i:2$\rightarrow$n自底向上计算。最终$f(n)$为所求答案。\\
+
+\section*{Problem 7.3}
+\indent 新建数组$f[1..n]$,$pre[1..n]$,$f[i]$记录下当前以$A[i]$结束的最长非递减子序列的长度。$pre[.]$用于记录下以该元素为结尾的最大非递减子序列的前驱。当新的一个元素加入时，判断之前的所有元素是否小于等于当前元素，取其中可以形成最长单调非递减子序列的元素，更新$pre$和$f$.\\
+\indent 算法见\textbf{Algorithm \ref{longest increasing}}
+
+\begin{algorithm}[htbp]
+	\caption{LONGEST\_INCREASING\_SUBsq}
+	\label{longest increasing}
+	\begin{algorithmic}[1]
+		\STATE $f[1...n]={1}$
+		\STATE $pre[1...n]={1,2...n}$
+		\FOR{\textbf{i} in $[2,n]$}
+			\FOR{\textbf{j} in $[1,i-1]$}
+				\IF {$A[i] \ge A[j] $ \textbf{and} $f[i]<f[j]+1$}
+					\STATE $f[i]=f[j]+1$
+					\STATE $pre[i]=j$
+				\ENDIF
+			\ENDFOR
+		\ENDFOR
+		
+		\STATE find the max element in f[\ ] is f[max]
+		\STATE //输出序列，利用栈将序列倒序
+		\STATE $stack.push(f(max))$
+		\WHILE {$pre[max]!=max$}
+			\STATE $max=pre[max]$
+			\STATE $stack.push(f(max))$
+		\ENDWHILE
+		
+		\STATE 此时栈中的序列即为最长非递减子序列
+		\RETURN $stack$		
+	\end{algorithmic}
+\end{algorithm}
+
+\section*{Problem 7.4}
+\noindent \textbf{1.}\\
+\indent $A[1...n]$中的所有的0自然的将数组分为了若干个子数组，求出所有子数组中乘积最大的即可。\\
+
+\noindent \textbf{2.}\\
+\indent 利用两个数组$min[1...n]$,$max[1...n]$,$min[i]$和$max[i]$分别存储以$A[i]$结尾的乘积最小和乘积最大的子数组。\\
+\indent 易得转移方程为:其中注意$A[i]$自己也可以构成一个平凡的数组。
+\[
+max[i]=
+\begin{cases}
+A[1] &i==1\\
+max(A[i],min[i-1]*A[i],max[i-1]*A[i]) &else
+\end{cases}
+\]
+\[
+min[i]=
+\begin{cases}
+A[1] &i==1\\
+min(A[i],min[i-1]*A[i],max[i-1]*A[i])&else
+\end{cases}
+\]
+\indent 最后算法求出max[1..n]中的最大值,并向前进行重构解，算法伪代码见\textbf{Algorithm \ref{max_product_array}}。
+\begin{algorithm}[htbp]
+	\caption{MAX\_PRODUCT\_SUBARRAY}
+	\label{max_product_array}
+	\begin{algorithmic}[1]
+		\STATE $max[1...n]$
+		\STATE $min[1...n]$
+		\STATE $max[1]=min[1]=A[1]$
+		\FOR {i=2 \textbf{to} n}
+			\STATE $max[i]=max(A[i],min[i-1]*A[i],max[i-1]*A[i])$
+			\STATE $min[i]=min(A[i],min[i-1]*A[i],max[i-1]*A[i])$
+		\ENDFOR
+		\STATE find the max value in max[\ ] is $max[index]$
+		\STATE 从$index$往前开始对$A[\ ]$连乘，乘到$A[small]$时总乘积突然变小，则题目所求的数组为$A[small+1,small+2,...,index]$
+		\RETURN {$A[small+1,small+2,...,index]$}
+	\end{algorithmic}
+\end{algorithm}
+
+\noindent \textbf{3.}\\
+\indent \textbf{2.}中的方法并不失一般性。\\
+\section*{Problem 7.5}
+\noindent \textbf{1.}\\
+\indent LCS问题，直接利用书上的解法求解。定义$c[i,j]$表示$X_i$和$Y_j$的LCS长度，如果$i=0$或$j=0$,LCS长度为0.有如下转移方程:
+\[
+	c[i,j]=
+	\begin{cases}
+	0&i=0\ or\ j=0\\
+	c[i-1,j-1]+1 &if\ X_i==Y_j\\
+	max(c[i,j-1],c[i-1,j]) &if\ X_i\neq Y_j
+	\end{cases}
+\]
+算法见\textbf{Algorithm \ref{lcs len}},输出LCS的程序见\textbf{Algorithm \ref{print_lcs}}
+\begin{algorithm}[htbp]
+	\caption{LCS\_LEN}
+	\label{lcs len}
+	\begin{algorithmic}[1]
+	\STATE $b[1...m,1...n]$
+	\STATE $c[0...m,0...n]$
+	\FOR{i=1 \textbf{to} m}
+	 	\STATE $c[i,0]=0$
+	\ENDFOR
+	\FOR{j=0 \textbf{to} n}
+		\STATE $c[0,j]=0$
+	\ENDFOR	
+	\FOR {i=1 \textbf{to} m}
+		\FOR{j=1 \textbf{to} n}
+		\IF{$X_i==Y_j$}
+			\STATE $c[i,j]=c[i-1,j-1]+1$
+			\STATE $b[i,j]=\nwarrow$
+		\ELSIF {$c[i-1,j]\ge c[i,j-1]$}
+			\STATE $c[i,j]=c[i-1,j]$
+			\STATE $b[i,j]=\uparrow$
+		\ELSE
+			\STATE $c[i,j]=c[i,j-1]$
+			\STATE $b[i,j]=\leftarrow$
+		\ENDIF
+		\ENDFOR
+	\ENDFOR
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[htbp]
+	\caption{PRINT\_LCS(i,j)}
+	\label{print_lcs}
+	\begin{algorithmic}[1]
+		\IF{$i==0 $or $j==0$}
+			\RETURN { }
+		\ENDIF
+		\IF {$b[i,j]==\nwarrow$}
+			\STATE PRINT\_LCS(i-1,j-1)
+			\STATE print $X_i$
+		\ELSIF {$b[i,j]==\uparrow$}
+			\STATE PRINT\_LCS(i-1,j)
+		\ELSE
+			\STATE PRINT\_LCS(i,j-1)
+		\ENDIF
+	\end{algorithmic}
+\end{algorithm}
+
+
+\noindent \textbf{2.}\\
+	\indent 只需将转移方程改为
+	\[
+	c[i,j]=
+	\begin{cases}
+	0&i=0\ or\ j=0\\
+	c[i,j-1]+1 &if\ X_i==Y_j\\
+	max(c[i,j-1],c[i-1,j]) &if\ X_i\neq Y_j
+	\end{cases}
+	\] 
+	算法也对应位置作改动即可，不再赘述。\\
+\noindent \textbf{3.}\\
+\indent 1.和2.的综合体.\\
+\indent 利用一个数组count[1..m]记录下X中字符出现的次数，初始化为0。当次数小于k时，$X_i==Y_j$时$c[i,j]=c[i,j-1]+1$，同时对应字符出现次数加一;当次数大于等于k时,，$X_i==Y_j$时$c[i,j]=c[i-1,j-1]+1$.
+
+\section*{Problem 7.6}
+%\indent 将7.5的转移方程改为
+%\[
+%c[i,j]=
+%\begin{cases}
+%0&i=0\ or\ j=0\\
+%1+c[i-1,j-1] &if\ X_i==Y_j\\
+%1+min(c[i,j-1],c[i-1,j]) &if\ X_i\neq Y_j
+%\end{cases}
+%\] 
+%算法也作对应改动，最短公共超序列为c[m,n].\\
+\indent 求A和B的LCS长度为$l$,则最短公共超序列长度为$m+n-l$.\\
+
+\section*{Problem 7.7}
+
+\section*{Problem 7.8}
+\indent 首先因为前向和后向的字符串不能够重叠，令$m=|\frac{n}{2}|$,所以将字符串的两个子串$T[1...m]$和$T[m+1...n]$取出，将第二个子串倒序，令倒序后的字符串为$M[1...m]$，这样原问题就被转化为求$T[1..m]$和$M[1...m]$的相同的最长连续子串的长度。\\
+\indent c[i,j]指示了以T[i]和M[j]结尾的最长连续子串的长度，如果T[i]==M[j],则c[i,j]=以T[i-1]和M
+[j-1]结尾的最长连续子串的长度加一，否则就为0。
+\indent 转移方程为
+\[
+c[i,j]=
+\begin{cases}
+%0&i=0\ or\ j=0\\
+c[i-1,j-1]+1 &if\ X_i==Y_j\\
+0 &else
+\end{cases}
+\] 
+\indent 最终返回c[1...m,1...m]中的最大值。算法伪代码和之前类似,稍作改动，见\textbf{Algorithm \ref{LCString}}
+\begin{algorithm}[htbp]
+	\caption{LCString\_LEN}
+	\label{LCString}
+	\begin{algorithmic}[1]
+		\STATE $c[0...m,0...m]$
+		\FOR{i=1 \textbf{to} m}
+		\STATE $c[i,0]=0$
+		\ENDFOR
+		\FOR{j=0 \textbf{to} m}
+		\STATE $c[0,j]=0$
+		\ENDFOR	
+		\FOR {i=1 \textbf{to} m}
+		\FOR{j=1 \textbf{to} m}
+		\IF{$X_i==Y_j$}
+			\STATE $c[i,j]=c[i-1,j-1]+1$
+		\ELSE
+			\STATE $c[i,j]=0$
+		\ENDIF
+		\ENDFOR
+		\ENDFOR
+		\RETURN {max of $c[1..m][1...m]$}
+	\end{algorithmic}
+\end{algorithm}
+
+\indent 突然发现可以将二维矩阵c降维为一维矩阵c[1...m],因为从转移方程来看，每一行只会被他之后的一行所使用，所以我们只需要使用一行矩阵存储结果就可以了。\\
+\indent 因此，有新的转移方程为
+\[
+c[j]=
+\begin{cases}
+c[j-1]+1 &if\ X_i==Y_j\\
+0 &else
+\end{cases}
+\] 
+算法伪代码见\textbf{Algorithm \ref{LCString——modify}}，稍作改动就可以了。这就把空间复杂度降为$O(n)了$\\
+\begin{algorithm}[htbp]
+	\caption{LCString\_Modify}
+	\label{LCString——modify}
+	\begin{algorithmic}[1]
+		\STATE $c[0...m]$
+		\FOR{i=1 \textbf{to} m}
+		\STATE $c[i]=0$
+		\ENDFOR
+		\FOR {i=1 \textbf{to} m}
+		\FOR{j=1 \textbf{to} m}
+		\IF{$X_i==Y_j$}
+		\STATE $c[j]=c[j-1]+1$
+		\ELSE
+		\STATE $c[j]=0$
+		\ENDIF
+		\ENDFOR
+		\ENDFOR
+		\RETURN {max of $c[1..m]$}
+	\end{algorithmic}
+\end{algorithm}
+
+\section*{Problem 7.9}
+\indent 新建$c[1...n]$,$c[i]$指示以$s[1...i]$是否可以重建为由合法单词组成的序列,新建$pre[1...n]$用于重构解,$pre[i]$指示最后一个合法单词为$s[pre[i]+1....i]$。
+\indent 易得有如下转移方程:
+\[
+c[i]=
+\begin{cases}
+TRUE & i==0\\
+c[i-1]\&\&dict(s[i])||c[i-2]\&\&dict(s[i-1,i])||......||c[0]\&\&dict(s[1,2...i]) &else
+\end{cases}
+\] 
+\begin{algorithm}[htbp]
+	\caption{DICT}
+	\label{DICT}
+	\begin{algorithmic}[1]
+		\STATE $c[0...n]$
+		\STATE $pre[1...n]={0}$//全部初始化为0
+		\STATE $c[0]=TRUE$
+		\FOR{$i=1$ \textbf{to} $n$}
+			\STATE bool $judge=FALSE$
+			\FOR {$j=i-1$ \textbf{to} $2$}
+				\IF{$c[j]\&\&dict(s[j+1...i])==TRUE$}
+					\STATE $judge=TRUE$
+					\STATE $pre[i]=j$
+				\STATE \textbf{Break}
+				\ENDIF
+				\STATE $c[i]=judge$
+			\ENDFOR
+		\ENDFOR
+		\RETURN {$c[n]$}
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[htbp]
+	\caption{PRINT\_DICT($n$)}
+	\label{PrintDICT}
+	\begin{algorithmic}[1]
+		\STATE $begin=pre[n]$
+		\IF{$begin\ne 0$}
+			\STATE PRINT\_DICT($begin$)
+			\STATE print $s[begin+1,...n]$
+		\ELSE
+			\STATE print $s[1...n]$
+		\ENDIF
+	\end{algorithmic}
+\end{algorithm}
+
+\indent 算法伪代码见\textbf{Algorithm \ref{DICT}},重构解算法伪代码见\textbf{Algorithm \ref{PrintDICT}}.
+\end {document}
